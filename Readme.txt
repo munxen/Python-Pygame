@@ -1,0 +1,1 @@
+In this repository I am studying the pygame library. After completing tasks from the Internet, I will create author projects
