@@ -1,9 +1,10 @@
 import pygame
 
 class Ship():
-    def __init__(self,screen):
+    def __init__(self, ai_settings, screen):
         """Инициализирует корабль и задаёт начальную позицию"""
         self.screen = screen
+        self.ai_settings = ai_settings
         
         #Загрузка изображения корабля и получение прямоугольника
         self.image = pygame.image.load('C:/Users/proro/Desktop/programm/git_projects/git repositories/Python Pygame/Cosmosos/player_ship.bmp')
@@ -14,16 +15,22 @@ class Ship():
         self.rect.centerx = self.screen_rect.centerx
         self.rect.bottom = self.screen_rect.bottom
 
+        #Сохранение вещественной координаты центра корабля
+        self.center = float(self.rect.centerx)
+
         #Флаги перемещения
         self.moving_right = False
         self.moving_left = False
     
     def update(self):
         """Обновляет позицию корабля с учётом флагов"""
-        if self.moving_right:
-            self.rect.centerx += 1
-        if self.moving_left:
-            self.rect.centerx -= 1
+        "Обновляем атрибут center, не rect."
+        if self.moving_right and self.rect.right < self.screen_rect.right:
+            self.center += self.ai_settings.ship_speed_factor
+        if self.moving_left and self.rect.left > 0:
+            self.center -= self.ai_settings.ship_speed_factor
+        "Обновление атрибута rect на основании self.center"
+        self.rect.centerx = self.center
 
     def blitme(self):
         "Рисует корабль в текущей позиции"
