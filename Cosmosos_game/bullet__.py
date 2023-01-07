@@ -5,7 +5,7 @@ class Bullet(Sprite):
     """Класс для управления пулями, выпущенными кораблём"""
     def __init__(self, ai_settings, screen, ship):
         """Создаёт объект пули в текущей позиции корабля"""
-        super(Bullet, self).__init__()
+        super().__init__()
         self.screen = screen
 
         #Создание пули  в позиции (0,0) и назначение в правильной позиции.

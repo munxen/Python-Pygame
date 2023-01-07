@@ -5,6 +5,7 @@ import pygame
 from pygame.sprite import Group
 from settings__ import Settings
 from ship__ import Ship
+from alien__ import Alien
 import game_functions__ as gf
 
 def run_game():
@@ -16,11 +17,13 @@ def run_game():
                                      ai_settings.screen_height))
     pygame.display.set_caption('Cosmosos')
 
-    # Создание корабля
+    # Создание корабля, группы пуль и группы пришельцев
     ship = Ship(ai_settings, screen)
-
-    # Создание группы для хранения пуль
     bullets = Group()
+    aliens = Group()
+
+    #Создание флота пришельцев
+    gf.create_fleet(ai_settings, screen, ship, aliens)
 
     # Запуск основного цикла игры
     while True:
@@ -28,9 +31,6 @@ def run_game():
         gf.check_events(ai_settings, screen, ship, bullets)
         ship.update()
         gf.update_bullets(bullets)
-        gf.update_screen(ai_settings, screen, ship, bullets)
-
-        # Отображение последнего прорисованного экрана.
-        pygame.display.flip()
+        gf.update_screen(ai_settings, screen, ship, aliens, bullets)
 
 run_game()
