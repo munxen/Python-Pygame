@@ -1,8 +1,10 @@
 import pygame
 
-class Platform():
+class Platform(pygame.sprite.Sprite):
     """Инициализация платформы"""
-    def __init__(self,screen_width):
-        self.screen_width = screen_width
-        self.surf = pygame.Surface((screen_width,20))
-        self.surf.fill((255,0,0))
+    def __init__(self):
+        super().__init__()
+        self.image = pygame.Surface((1200,100))
+        self.image.fill((139, 69, 19))
+        self.rect = self.image.get_rect()
+        self.rect.center = (600, 630)
