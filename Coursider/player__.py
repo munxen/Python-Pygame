@@ -1,4 +1,5 @@
 import pygame
+import time
 
 class Player(pygame.sprite.Sprite):
 
@@ -16,30 +17,35 @@ class Player(pygame.sprite.Sprite):
 
     def update(self):
         """Управление игроком"""
-        self.gravity()
+        self.gravity() #устанавливаем гравитацию
         self.rect.x += self.change_x #передвижение влево/вправо
         self.rect.y += self.change_y #передвижение вверх/вниз
+        self.change_y = 0 #останавливаем вертикальное движение
     
     def gravity(self):
         """Гравитация игрока"""
         if self.change_y == 0:
-            self.change_y = 0.1
+            self.change_y = 10
         else:
             self.change_y += .95
+        """Если уже на земле, ставим позицию y как 0"""
+        if self.rect.y >= 640 - self.rect.height and self.change_y >= 0:
+            self.change_y = 0
+            self.rect.y = 640 - self.rect.height
     
     def go_left(self):
         """Ходьба влево"""
-        self.change_x = -1
+        self.change_x = -6
     
     def go_right(self):
         """Ходьба вправо"""
-        self.change_x = 1
+        self.change_x = 6
 
     def jump(self):
         "Прыжок"
-        self.change_y += -5
+        self.change_y = -10
 
     def stop(self):
-        """Чел стоит"""
+        """Игрок стоит"""
         self.change_x = 0
     
