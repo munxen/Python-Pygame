@@ -28,10 +28,6 @@ def run_game():
 
     #Рычаг столкновений
     collizions = True
-    print ("Координата верх платформы " + str(platform.rect.top))
-    print ("Координата низ платформы " + str(platform.rect.bottom))
-    print ("Координата слева платформы " + str(platform.rect.left))
-    print ("Координата справа платформы " + str(platform.rect.right))
 
     # Запуск основного цикла игры
     while True:
@@ -58,27 +54,48 @@ def run_game():
 
         # Прыжок
         player.jump_on()
-        #print("Координата right Игрока: " + str(player.rect.right))
-        #print("Координата left Платформы: " + str(platform.rect.left))
-
-        # Проверка на столкновение с платформой
-        hits = pygame.sprite.spritecollide(player, all_sprites_platform, False)
-        if hits:
-            print("Обнаружена коллизия")
-            if player.rect.right == platform.rect.left:
-                print("Обнаружено столкновение right игрока и left платформы ")
-                #player.rect.right = platform.rect.left
-
 
         # Обновлене спрайтов
         all_sprites_player.update()
         all_sprites_platform.update()
 
+        #Столкновение с платформой
+        hits = pygame.sprite.spritecollide(player, all_sprites_platform, False)
+        if hits:
+            collizions = True
+        else:
+            collizions = False
+
         # Ограничение передвижения
+        "Ограничение c экраном"
         if player.rect.right > ai_settings.screen_width:
             player.rect.right = ai_settings.screen_width
         if player.rect.left < 0:
             player.rect.left = 0
+
+        "Коллизии c платформами"
+        if collizions == True:
+
+                #Коллизия справа от игрока
+            if player.rect.right - 5 == platform.rect.left:
+                player.rect.right = platform.rect.left
+
+                #Коллизия слева от игрока
+            if player.rect.left + 5 == platform.rect.right:
+                player.rect.left = platform.rect.right
+
+                #Коллизия сверху игрока
+            if player.rect.top > platform.rect.top \
+                and player.rect.bottom > platform.rect.top \
+                and player.rect.right != platform.rect.left \
+                and player.rect.left != platform.rect.right:
+                player.rect.top = platform.rect.bottom
+
+                #Коллизия снизу игрока
+            elif player.rect.bottom >= platform.rect.top \
+            and player.rect.right != platform.rect.left \
+            and player.rect.left != platform.rect.right:
+                player.rect.bottom = platform.rect.top
 
         """Рендеринг"""
         # При каждом проходе цикла перерисовывается экран

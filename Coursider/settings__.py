@@ -9,4 +9,4 @@ class Settings():
         self.bg_color = (230,230,230)
 
         #Счётчик частоты кадров
-        self.FPS = 30
+        self.FPS = 60
