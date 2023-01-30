@@ -1,5 +1,7 @@
 import pygame
 
+import platform__
+
 class Player(pygame.sprite.Sprite):
 
     def __init__(self, screen_width, screen_height):
@@ -66,3 +68,4 @@ class Player(pygame.sprite.Sprite):
         """Игрок стоит"""
         self.change_x = 0
     
+

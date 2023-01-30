@@ -19,7 +19,7 @@ def run_game():
     all_sprites_player = pygame.sprite.Group()
 
     # Создание класса Player и добавление в общую группу
-    player = Player(ai_settings.screen_width, ai_settings.screen_height)
+    player = Player(ai_settings.screen_width, ai_settings.screen_height,)
     all_sprites_player.add(player)
 
     # Создание класса Platform и добавление в общую группу
@@ -66,13 +66,6 @@ def run_game():
         else:
             collizions = False
 
-        # Ограничение передвижения
-        "Ограничение c экраном"
-        if player.rect.right > ai_settings.screen_width:
-            player.rect.right = ai_settings.screen_width
-        if player.rect.left < 0:
-            player.rect.left = 0
-
         "Коллизии c платформами"
         if collizions == True:
 
@@ -96,6 +89,13 @@ def run_game():
             and player.rect.right != platform.rect.left \
             and player.rect.left != platform.rect.right:
                 player.rect.bottom = platform.rect.top
+
+        # Ограничение передвижения
+        "Ограничение c экраном"
+        if player.rect.right > ai_settings.screen_width:
+            player.rect.right = ai_settings.screen_width
+        if player.rect.left < 0:
+            player.rect.left = 0
 
         """Рендеринг"""
         # При каждом проходе цикла перерисовывается экран
