@@ -26,6 +26,17 @@ def run_game():
     platform = Platform()
     all_sprites_platform.add(platform)
 
+    #Функция по добавлению платформы
+    def create_platform():
+        platform = Platform()
+        all_sprites_platform.add(platform)
+
+    #Количество созданных платформ
+    platforming = 1
+
+    #Разрешение на создание платформ
+    create = False
+
     #Рычаг столкновений
     collizions = True
 
@@ -45,12 +56,20 @@ def run_game():
                 if not player.jumping:
                     if event.key == pygame.K_w:
                         player.jumping = True
-
             if event.type == pygame.KEYUP:
-                if event.key == pygame.K_a and player.change_x < 0:
+                if event.key == pygame.K_a and player.change_left < 0:
                     player.stop()
-                if event.key == pygame.K_d and player.change_x > 0:
+                if event.key == pygame.K_d and player.change_right > 0:
                     player.stop()
+
+
+        if platform.rect.y >= 300:
+            create = True
+            if platforming != 3 and create == True:
+                create_platform()
+                platforming += 1
+                create == False
+
 
         # Прыжок
         player.jump_on()
@@ -68,27 +87,10 @@ def run_game():
 
         "Коллизии c платформами"
         if collizions == True:
-
-                #Коллизия справа от игрока
-            if player.rect.right - 5 == platform.rect.left:
-                player.rect.right = platform.rect.left
-
-                #Коллизия слева от игрока
-            if player.rect.left + 5 == platform.rect.right:
-                player.rect.left = platform.rect.right
-
-                #Коллизия сверху игрока
-            if player.rect.top > platform.rect.top \
-                and player.rect.bottom > platform.rect.top \
-                and player.rect.right != platform.rect.left \
-                and player.rect.left != platform.rect.right:
-                player.rect.top = platform.rect.bottom
-
-                #Коллизия снизу игрока
-            elif player.rect.bottom >= platform.rect.top \
-            and player.rect.right != platform.rect.left \
-            and player.rect.left != platform.rect.right:
-                player.rect.bottom = platform.rect.top
+            if player.change_right > 0:
+                player.stop_right()
+            if player.change_left < 0:
+                player.stop_left()
 
         # Ограничение передвижения
         "Ограничение c экраном"

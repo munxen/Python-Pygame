@@ -58,14 +58,27 @@ class Player(pygame.sprite.Sprite):
     
     def go_left(self):
         """Ходьба влево"""
-        self.change_x = -self.player_sreed_factor
-    
+        self.change_left = -self.player_sreed_factor
+        self.change_x = self.change_left
+
     def go_right(self):
         """Ходьба вправо"""
-        self.change_x = self.player_sreed_factor
-
+        self.change_right = self.player_sreed_factor
+        self.change_x = self.change_right
+        
     def stop(self):
         """Игрок стоит"""
         self.change_x = 0
     
+    def stop_right(self):
+        "Игрок стоит при коллизии справа"
+        self.change_right = 0
+        self.change_x = self.change_right
 
+    def stop_left(self):
+        "Игрок стоит при коллизии слева"
+        self.change_left = 0
+        self.change_x = self.change_left
+
+    def stop_up_down(self):
+        self.change_y = 0
