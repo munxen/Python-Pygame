@@ -26,17 +26,6 @@ def run_game():
     platform = Platform()
     all_sprites_platform.add(platform)
 
-    #Функция по добавлению платформы
-    def create_platform():
-        platform = Platform()
-        all_sprites_platform.add(platform)
-
-    #Количество созданных платформ
-    platforming = 1
-
-    #Разрешение на создание платформ
-    create = False
-
     #Рычаг столкновений
     collizions = True
 
@@ -51,26 +40,38 @@ def run_game():
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_a:
                     player.go_left()
+                    #platform.platform_go_left = True
                 if event.key == pygame.K_d:
                     player.go_right()
+                    #platform.platform_go_right = True
                 if not player.jumping:
                     if event.key == pygame.K_w:
                         player.jumping = True
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_a and player.change_left < 0:
                     player.stop()
+                    #platform.platform_go_left = False
                 if event.key == pygame.K_d and player.change_right > 0:
                     player.stop()
+                    #platform.platform_go_right = False
 
+        "Изменение платформы"
+        #Прыжки
+        if player.jump_count < 8 and player.jump_count > 0:
+            platform.speed_factor_platform = 8 
+        if player.jump_count < 0 or player.jump_count == 8:
+            platform.speed_factor_platform = 2
+        #Ходьба 
+        if player.change_x < 0:
+            platform.platform_go_left = True
+        else:
+            platform.platform_go_left = False
 
-        if platform.rect.y >= 300:
-            create = True
-            if platforming != 3 and create == True:
-                create_platform()
-                platforming += 1
-                create == False
-
-
+        if player.change_x > 0:
+            platform.platform_go_right = True
+        else:
+            platform.platform_go_right = False
+        
         # Прыжок
         player.jump_on()
 
@@ -78,7 +79,7 @@ def run_game():
         all_sprites_player.update()
         all_sprites_platform.update()
 
-        #Столкновение с платформой
+        # Столкновение с платформой
         hits = pygame.sprite.spritecollide(player, all_sprites_platform, False)
         if hits:
             collizions = True
@@ -87,10 +88,25 @@ def run_game():
 
         "Коллизии c платформами"
         if collizions == True:
-            if player.change_right > 0:
-                player.stop_right()
-            if player.change_left < 0:
-                player.stop_left()
+            #Коллизия справа
+            if player.rect.right >= platform.rect.left and\
+                player.rect.right <= platform.rect.left + 30:
+                player.rect.right = platform.rect.left
+                platform.platform_go_right = False
+            #Коллизия слева
+            if player.rect.left <= platform.rect.right and\
+                player.rect.left >= platform.rect.right - 30 :
+                player.rect.left = platform.rect.right
+                platform.platform_go_left = False
+            #Коллизия игрока снизу
+            if player.rect.bottom >= platform.rect.top and\
+                player.rect.bottom <= platform.rect.top + 50 :
+                player.rect.bottom = platform.rect.top
+
+            #Коллизия игрока снизу    
+            elif player.rect.top <= platform.rect.bottom and\
+                player.rect.top >= platform.rect.bottom - 50 :
+                player.rect.top = platform.rect.bottom
 
         # Ограничение передвижения
         "Ограничение c экраном"

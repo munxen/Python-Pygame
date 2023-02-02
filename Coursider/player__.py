@@ -19,7 +19,7 @@ class Player(pygame.sprite.Sprite):
         self.change_x = 0 #Рычаг скорости вправо/влево 
         self.change_y = 0 #Рычаг скорости вверх/вниз
 
-        self.player_sreed_factor = 5 #Скорость игрока
+        self.player_sreed_factor = 2 #Скорость игрока
 
         self.jumping = False #Проверка, находится ли игрок в прыжке
         self.jump_count = 8 #Коэффицент прыжка 
@@ -34,7 +34,7 @@ class Player(pygame.sprite.Sprite):
     def gravity(self):
         """Гравитация игрока"""
         if self.change_y == 0:
-            self.change_y = 20
+            self.change_y = 10
         else:
             self.change_y += .95
         """Если уже на земле, ставим позицию y как 0"""
@@ -79,6 +79,3 @@ class Player(pygame.sprite.Sprite):
         "Игрок стоит при коллизии слева"
         self.change_left = 0
         self.change_x = self.change_left
-
-    def stop_up_down(self):
-        self.change_y = 0
