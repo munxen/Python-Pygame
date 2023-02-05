@@ -1,5 +1,6 @@
 import sys
 import pygame
+import random
 
 from settings__ import Settings
 from player__ import Player
@@ -22,12 +23,14 @@ def run_game():
     player = Player(ai_settings.screen_width, ai_settings.screen_height,)
     all_sprites_player.add(player)
 
-    # Создание класса Platform и добавление в общую группу
-    platform = Platform()
+    # Создание класса Platform, списка с коллизиями для каждой платформы и добавление в общую группу
+    platform_list = []
+    platform = Platform(random.randrange(-100, 1200) , -100)
     all_sprites_platform.add(platform)
+    platform_list.append(platform)
 
-    #Рычаг столкновений
-    collizions = True
+    create = True #Рычаг создания новой платформы
+    platforms = 1 #Количество созданных платформ
 
     # Запуск основного цикла игры
     while True:
@@ -40,80 +43,62 @@ def run_game():
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_a:
                     player.go_left()
-                    #platform.platform_go_left = True
                 if event.key == pygame.K_d:
                     player.go_right()
-                    #platform.platform_go_right = True
                 if not player.jumping:
                     if event.key == pygame.K_w:
                         player.jumping = True
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_a and player.change_left < 0:
                     player.stop()
-                    #platform.platform_go_left = False
                 if event.key == pygame.K_d and player.change_right > 0:
                     player.stop()
-                    #platform.platform_go_right = False
-
-        "Изменение платформы"
-        #Прыжки
-        if player.jump_count < 8 and player.jump_count > 0:
-            platform.speed_factor_platform = 8 
-        if player.jump_count < 0 or player.jump_count == 8:
-            platform.speed_factor_platform = 2
-        #Ходьба 
-        if player.change_x < 0:
-            platform.platform_go_left = True
-        else:
-            platform.platform_go_left = False
-
-        if player.change_x > 0:
-            platform.platform_go_right = True
-        else:
-            platform.platform_go_right = False
-        
         # Прыжок
         player.jump_on()
+
+        for p in platform_list:
+            """Коллизии"""
+            if pygame.sprite.spritecollide(player, all_sprites_platform, False):
+                #Коллизия справа
+                if player.rect.right >= p.rect.left and\
+                    player.rect.right <= p.rect.left + 10:
+                    player.rect.right = p.rect.left
+
+                #Коллизия слева
+                if player.rect.left <= p.rect.right and\
+                    player.rect.left >= p.rect.right - 10 :
+                    player.rect.left = p.rect.right
+
+                #Коллизия игрока снизу
+                if player.rect.bottom >= platform.rect.top and\
+                    player.rect.bottom <= platform.rect.top + 50 :
+                    player.rect.bottom = p.rect.top
+
+                #Коллизия игрока сверху   
+                elif player.rect.top <= p.rect.bottom and\
+                    player.rect.top >= p.rect.bottom - 50:
+                    player.rect.top = p.rect.bottom
+
+        #Создание второй платформы
+        if p.rect.bottom > 200 and create == True:
+            platform = Platform(random.randrange(-100, 1200) , -100)
+            all_sprites_platform.add(platform)
+            platform_list.append(platform)
+            platforms += 1
+            if platforms > 2:
+                create = False
+
 
         # Обновлене спрайтов
         all_sprites_player.update()
         all_sprites_platform.update()
 
-        # Столкновение с платформой
-        hits = pygame.sprite.spritecollide(player, all_sprites_platform, False)
-        if hits:
-            collizions = True
-        else:
-            collizions = False
-
-        "Коллизии c платформами"
-        if collizions == True:
-            #Коллизия справа
-            if player.rect.right >= platform.rect.left and\
-                player.rect.right <= platform.rect.left + 30:
-                player.rect.right = platform.rect.left
-                platform.platform_go_right = False
-            #Коллизия слева
-            if player.rect.left <= platform.rect.right and\
-                player.rect.left >= platform.rect.right - 30 :
-                player.rect.left = platform.rect.right
-                platform.platform_go_left = False
-            #Коллизия игрока снизу
-            if player.rect.bottom >= platform.rect.top and\
-                player.rect.bottom <= platform.rect.top + 50 :
-                player.rect.bottom = platform.rect.top
-
-            #Коллизия игрока снизу    
-            elif player.rect.top <= platform.rect.bottom and\
-                player.rect.top >= platform.rect.bottom - 50 :
-                player.rect.top = platform.rect.bottom
-
         # Ограничение передвижения
         "Ограничение c экраном"
-        if player.rect.right > ai_settings.screen_width:
-            player.rect.right = ai_settings.screen_width
-        if player.rect.left < 0:
-            player.rect.left = 0
+        if player.rect.right > ai_settings.screen_width / 4 * 3:
+            player.rect.right = ai_settings.screen_width / 4 * 3
+        if player.rect.left < ai_settings.screen_width / 4:
+            player.rect.left = ai_settings.screen_width / 4
 
         """Рендеринг"""
         # При каждом проходе цикла перерисовывается экран
