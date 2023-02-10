@@ -4,20 +4,23 @@ import random
 
 class Platform(pygame.sprite.Sprite):
     """Инициализация платформы"""
-    def __init__(self, x_p, y_p):
+    def __init__(self, start_platform_hight, start_platform_weight, speed_platform):
         super().__init__()
-        self.x_p = x_p #Координата x появления платформы
-        self.y_p = y_p #Координата y появления платформы
-        self.image = pygame.Surface((300, 70))
+        self.start_platform_hight = start_platform_hight # Координата x появления платформы
+        self.start_platform_weight = start_platform_weight # Координата y появления платформы
+        self.speed_platform = speed_platform
+        self.image = pygame.Surface((350, 120))
         self.image.fill((139, 69, 19))
         self.rect = self.image.get_rect()
-        self.rect.center = (x_p, y_p)
-        self.speed_factor_platform = 2
-        self.platform_go_right = False #Рычаг ходьбы вправо
-        self.platform_go_left = False #Рычаг ходьбы влево
+        self.rect.center = (start_platform_hight, start_platform_weight)
+
+        self.platform_go_right = False # Рычаг передвижения платформ вправо
+        self.platform_go_left = False # Рычаг передвижения платформ влево
+        self.platform_down = False # Рычаг ускорения падения платформы
 
     def update(self):
         "Движение платформы"
-        self.rect.y += self.speed_factor_platform
+        self.rect.y += self.speed_platform
         if self.rect.top > 640 :
             self.rect.center = (random.randrange(-100, 1200) , -100)
+

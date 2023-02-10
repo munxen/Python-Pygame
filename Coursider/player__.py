@@ -1,7 +1,5 @@
 import pygame
 
-import platform__
-
 class Player(pygame.sprite.Sprite):
 
     def __init__(self, screen_width, screen_height):
@@ -24,6 +22,7 @@ class Player(pygame.sprite.Sprite):
         self.jumping = False #Проверка, находится ли игрок в прыжке
         self.jump_count = 6 #Коэффицент прыжка 
 
+
     def update(self):
         """Управление игроком"""
         self.gravity() #устанавливаем гравитацию
@@ -34,7 +33,7 @@ class Player(pygame.sprite.Sprite):
     def gravity(self):
         """Гравитация игрока"""
         if self.change_y == 0:
-            self.change_y = 10
+            self.change_y = 6
         else:
             self.change_y += .95
         """Если уже на земле, ставим позицию y как 0"""
@@ -43,18 +42,15 @@ class Player(pygame.sprite.Sprite):
             self.rect.y = self.screen_height - self.rect.height
 
     def jump_on(self):
-        "Прыжок вверх"
+        "Прыжок"
         if self.jumping == True:
             if self.jump_count >= -6:
                 if self.jump_count > 0:
-                    self.change_y -= (self.jump_count ** 2) / 2 
-                else:
-                    self.change_y += (self.jump_count ** 2) / 2
+                    self.change_y -= (self.jump_count ** 2) / 2 + 3
                 self.jump_count -= 0.2
-
-            else:
-                self.jumping = False
-                self.jump_count = 6
+                if self.jump_count < -6:
+                    self.jump_count = 6
+                    self.jumping = False
 
     def go_left(self):
         """Ходьба влево"""
@@ -65,10 +61,17 @@ class Player(pygame.sprite.Sprite):
         """Ходьба вправо"""
         self.change_right = self.player_sreed_factor
         self.change_x = self.change_right
-        
+    
+    def pull_right(self):
+        """Рывок вправо"""
+        self.rect.x += 120
+
+    def pull_left(self):
+        """Рывок влево"""
+        self.rect.x -= 120
+
     def stop(self):
         """Игрок стоит"""
-        self.change_y = 0
         self.change_x = 0
         self.change_left = 0
         self.change_right = 0
