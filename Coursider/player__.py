@@ -16,7 +16,6 @@ class Player(pygame.sprite.Sprite):
         self.change_left = 0 #Скорость влево
         self.change_x = 0 #Рычаг скорости вправо/влево 
         self.change_y = 0 #Рычаг скорости вверх/вниз
-
         self.player_sreed_factor = 4 #Скорость игрока
 
         self.jumping = False #Проверка, находится ли игрок в прыжке
@@ -24,11 +23,18 @@ class Player(pygame.sprite.Sprite):
 
 
     def update(self):
+
         """Управление игроком"""
         self.gravity() #устанавливаем гравитацию
         self.rect.x += self.change_x #передвижение влево/вправо
         self.rect.y += self.change_y #передвижение вверх/вниз
         self.change_y = 0 #останавливаем вертикальное движение
+
+        "Ограничение передвижения слева/справа"
+        if self.rect.right > self.screen_width / 4 * 3:
+            self.rect.right = self.screen_width / 4 * 3 
+        if self.rect.left < self.screen_width / 4:
+            self.rect.left = self.screen_width / 4
 
     def gravity(self):
         """Гравитация игрока"""

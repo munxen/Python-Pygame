@@ -17,9 +17,11 @@ class Platform(pygame.sprite.Sprite):
         self.platform_go_right = False # Рычаг передвижения платформ вправо
         self.platform_go_left = False # Рычаг передвижения платформ влево
         self.platform_down = False # Рычаг ускорения падения платформы
+        self.create_platform = True # Рычаг создания платформы
 
     def update(self):
         "Движение платформы"
+            #Влево/вправо
         self.rect.y += self.speed_platform
         if self.rect.top > 640 :
             self.rect.center = (random.randrange(-100, 1200) , -100)

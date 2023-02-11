@@ -1,6 +1,5 @@
 import sys
 import pygame
-import random
 
 from settings__ import Settings
 from player__ import Player
@@ -16,7 +15,7 @@ def run_game():
     clock = pygame.time.Clock()
 
     # Создание класса Player и добавление в общую группу
-    player = Player(ai_settings.screen_width, ai_settings.screen_height,)
+    player = Player(ai_settings.screen_width, ai_settings.screen_height)
     ai_settings.player_sprites.add(player)
 
     # Создание класса Platform, списка с коллизиями для каждой платформы и добавление в общую группу
@@ -56,45 +55,24 @@ def run_game():
                     player.stop()
                     platform.platform_go_left = False
 
-        # Прыжок
-        player.jump_on()
-
-
+        # Установка условий для каждой платформы
         for p in ai_settings.platform_list:
-
+            # Перемещение платформ при движении игрока
             gf.pull_platform(platform.platform_go_left, p, 
             platform.platform_go_right, player.jump_count)
-
+            # Коллизия игрока и платформы
             gf.collizions_platform(p, player, 
             ai_settings.platform_sprites)
+            
+        # Создание платформ
+        if p.rect.bottom > 200 and platform.create_platform == True:
+            gf.create_platform(ai_settings.platform_sprites,
+            ai_settings.platform_list, ai_settings.speed_factor_platform)
+            if len(ai_settings.platform_list) > 2:
+                platform.create_platform = False
 
-            gf.create_platform(p, ai_settings.platform_sprites, 
-            ai_settings.platform_list, ai_settings.speed_factor_platform, ai_settings.create_platform)
-
-        # Обновлене спрайтов
-        ai_settings.player_sprites.update()
-        ai_settings.platform_sprites.update()
-
-        # Ограничение передвижения
-        "Ограничение c экраном"
-        if player.rect.right > ai_settings.screen_width / 4 * 3:
-            player.rect.right = ai_settings.screen_width / 4 * 3
-        if player.rect.left < ai_settings.screen_width / 4:
-            player.rect.left = ai_settings.screen_width / 4
-
-
-        """Рендеринг"""
-        # При каждом проходе цикла перерисовывается экран
-        screen.fill(ai_settings.bg_color)
-
-        # Отрисовка спрайтов
-        ai_settings.platform_sprites.draw(screen)
-        ai_settings.player_sprites.draw(screen)
-
-        # FPS
-        clock.tick(ai_settings.FPS)
-
-        # Отображение последнего прорисованного окна
-        pygame.display.flip()
+        # Рендеринг
+        gf.rendering(ai_settings.player_sprites,ai_settings.platform_sprites,screen,
+        ai_settings.bg_color,clock,ai_settings.FPS, player )
 
 run_game()

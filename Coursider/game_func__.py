@@ -25,7 +25,7 @@ def pull_platform(platform_go_left, p, platform_go_right, jump_count):
             p.rect.y -= 1
 
 def collizions_platform(p, player, platform_sprites):
-    """Коллизии игрока и платформы"""
+    """Коллизии игрока и платформ"""
     if pygame.sprite.spritecollide(player, platform_sprites, False):
 
         #Коллизия справа
@@ -48,17 +48,32 @@ def collizions_platform(p, player, platform_sprites):
             player.rect.top >= p.rect.bottom - 20:
             player.rect.top = p.rect.bottom
 
-def create_platform(p, platform_sprites, 
-platform_list, speed_factor_platform, create_platform):
-
+def create_platform(platform_sprites, 
+platform_list, speed_factor_platform,):
     """Создание платформ"""
-    if p.rect.bottom > 200 and create_platform == True:
-        platform = Platform(random.randrange(-100, 1200) , -100, speed_factor_platform)
-        platform_sprites.add(platform)
-        platform_list.append(platform)
+    platform = Platform(random.randrange(-100, 1200) , -100, speed_factor_platform)
+    platform_sprites.add(platform)
+    platform_list.append(platform)
 
-        if len(platform_list) > 2:
-            create_platform = False
-        return create_platform
+def rendering(player_sprites,platform_sprites,screen,
+        bg_color,clock,FPS, player ):
 
-    print (create_platform)
+    # Рычаг прыжка
+    player.jump_on()
+
+    # Обновлене спрайтов
+    player_sprites.update()
+    platform_sprites.update()
+
+    # При каждом проходе цикла перерисовывается экран
+    screen.fill(bg_color)
+
+    # Отрисовка спрайтов
+    platform_sprites.draw(screen)
+    player_sprites.draw(screen)
+
+    # Установка ограничения кадров
+    clock.tick(FPS)
+
+    # Отображение последнего прорисованного окна
+    pygame.display.flip()
