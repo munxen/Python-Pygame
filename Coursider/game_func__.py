@@ -9,7 +9,7 @@ def inital_game():
     pygame.init()
     pygame.display.set_caption("Coursider")
 
-def pull_platform(platform_go_left, p, platform_go_right, jump_count):
+def pull_platform(platform_go_left, p, platform_go_right):
         """Изменение расположения платформ при движении игрока"""
             # Платформа летит влево/вправо
         if platform_go_left == True:
@@ -18,13 +18,8 @@ def pull_platform(platform_go_left, p, platform_go_right, jump_count):
         if platform_go_right == True:
             p.rect.left += 1
             p.rect.right += 1
-            # Платформа падает/замедляется
-        if jump_count < 6 and jump_count > 0:
-            p.rect.y += 2
-        if jump_count < 0:
-            p.rect.y -= 1
 
-def collizions_platform(p, player, platform_sprites):
+def collizions_platform(p, player, platform_sprites,):
     """Коллизии игрока и платформ"""
     if pygame.sprite.spritecollide(player, platform_sprites, False):
 
@@ -48,15 +43,32 @@ def collizions_platform(p, player, platform_sprites):
             player.rect.top >= p.rect.bottom - 20:
             player.rect.top = p.rect.bottom
 
-def create_platform(platform_sprites, 
-platform_list, speed_factor_platform,):
+def create_platform(platform_sprites, platform_list, 
+speed_factor_platform, edges):
     """Создание платформ"""
-    platform = Platform(random.randrange(-100, 1200) , -100, speed_factor_platform)
+    if edges == True:
+        platform = Platform(random.randrange(400, 800) , -100, speed_factor_platform, 
+        random.randrange(150, 400), 80, edges)
+
+    if edges == False:
+        list = ['first', 'second']
+        hit = random.choice(list)
+        if hit == 'first':
+            platform = Platform(random.randrange(0, 400) , -100, speed_factor_platform, 
+            random.randrange(150, 400), 80, edges)
+        if hit == 'second':
+            platform = Platform(random.randrange(800, 1200) , -100, speed_factor_platform, 
+            random.randrange(150, 400), 80, edges)
+            
     platform_sprites.add(platform)
     platform_list.append(platform)
 
 def rendering(player_sprites,platform_sprites,screen,
         bg_color,clock,FPS, player ):
+
+    # Рычаги рывков
+    player.pull_right()
+    player.pull_left()
 
     # Рычаг прыжка
     player.jump_on()

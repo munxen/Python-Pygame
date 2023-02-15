@@ -12,15 +12,18 @@ class Player(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.center = (screen_width/2, screen_height/2)
 
-        self.change_right = 0 #Скорость вправо
-        self.change_left = 0 #Скорость влево
-        self.change_x = 0 #Рычаг скорости вправо/влево 
-        self.change_y = 0 #Рычаг скорости вверх/вниз
-        self.player_sreed_factor = 4 #Скорость игрока
+        self.change_right = 0 # Скорость вправо
+        self.change_left = 0 # Скорость влево
+        self.change_x = 0 # Рычаг скорости вправо/влево 
+        self.change_y = 0 # Рычаг скорости вверх/вниз
+        self.player_sreed_factor = 4 # Скорость игрока
 
-        self.jumping = False #Проверка, находится ли игрок в прыжке
-        self.jump_count = 6 #Коэффицент прыжка 
+        self.jumping = False # Проверка, находится ли игрок в прыжке
+        self.jump_count = 6 # Коэффицент прыжка 
 
+        self.pulling_right = False # Проверка, находится ли игрок в рывке справа
+        self.pulling_left = False # Проверка, находится ли игрок в рывке справа
+        self.pull_count = 0 # Коэффицент рывка
 
     def update(self):
 
@@ -30,11 +33,13 @@ class Player(pygame.sprite.Sprite):
         self.rect.y += self.change_y #передвижение вверх/вниз
         self.change_y = 0 #останавливаем вертикальное движение
 
-        "Ограничение передвижения слева/справа"
-        if self.rect.right > self.screen_width / 4 * 3:
-            self.rect.right = self.screen_width / 4 * 3 
-        if self.rect.left < self.screen_width / 4:
-            self.rect.left = self.screen_width / 4
+        "Ограничение передвижения слева/справа/свехру"
+        if self.rect.right > self.screen_width:
+            self.rect.right = self.screen_width 
+        if self.rect.left < 0:
+            self.rect.left = 0
+        if self.rect.top < 0:
+            self.rect.top = 0
 
     def gravity(self):
         """Гравитация игрока"""
@@ -52,8 +57,8 @@ class Player(pygame.sprite.Sprite):
         if self.jumping == True:
             if self.jump_count >= -6:
                 if self.jump_count > 0:
-                    self.change_y -= (self.jump_count ** 2) / 2 + 3
-                self.jump_count -= 0.2
+                    self.change_y -= (self.jump_count ** 2) / 2
+                self.jump_count -= 0.14
                 if self.jump_count < -6:
                     self.jump_count = 6
                     self.jumping = False
@@ -70,11 +75,21 @@ class Player(pygame.sprite.Sprite):
     
     def pull_right(self):
         """Рывок вправо"""
-        self.rect.x += 120
+        if self.pulling_right == True:
+            self.rect.right += self.pull_count 
+            self.pull_count += 0.8
+            if self.pull_count > 18:
+                self.pulling_right = False
+                self.pull_count = 0
 
     def pull_left(self):
         """Рывок влево"""
-        self.rect.x -= 120
+        if self.pulling_left == True:
+            self.rect.left -= self.pull_count 
+            self.pull_count += 0.8
+            if self.pull_count > 18:
+                self.pulling_left = False
+                self.pull_count = 0
 
     def stop(self):
         """Игрок стоит"""

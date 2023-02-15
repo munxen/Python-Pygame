@@ -22,6 +22,9 @@ class Settings():
         self.start_platform_hight = random.randrange(-100, 1200)
         self.start_platform_weight = -100
 
+        self.platform_wight = random.randrange(150, 300)  # Ширина платформы
+        self.platform_hight = 80 # Ширина платформы
+
         # Количество создаваемых платформ
         self.create_platform = True
 
