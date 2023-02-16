@@ -2,15 +2,20 @@ import pygame
 
 class Player(pygame.sprite.Sprite):
 
-    def __init__(self, screen_width, screen_height):
+    def __init__(self, screen_width, screen_height, platform_x, platform_y):
         """Инициализирует игрока и его начальную позицию, хранит настройки игрока"""
         super().__init__()
         self.screen_width = screen_width
         self.screen_height = screen_height
+        self.platform_x = platform_x
+        self.platform_y = platform_y
         self.image = pygame.Surface((30,50))
         self.image.fill((0,0,255))
         self.rect = self.image.get_rect()
-        self.rect.center = (screen_width/2, screen_height/2)
+
+        #Начальная позиция игрока
+        self.rect.x = platform_x + 80
+        self.rect.y = platform_y - 100 
 
         self.change_right = 0 # Скорость вправо
         self.change_left = 0 # Скорость влево

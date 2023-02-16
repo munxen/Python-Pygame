@@ -44,22 +44,10 @@ def collizions_platform(p, player, platform_sprites,):
             player.rect.top = p.rect.bottom
 
 def create_platform(platform_sprites, platform_list, 
-speed_factor_platform, edges):
+speed_factor_platform):
     """Создание платформ"""
-    if edges == True:
-        platform = Platform(random.randrange(400, 800) , -100, speed_factor_platform, 
-        random.randrange(150, 400), 80, edges)
-
-    if edges == False:
-        list = ['first', 'second']
-        hit = random.choice(list)
-        if hit == 'first':
-            platform = Platform(random.randrange(0, 400) , -100, speed_factor_platform, 
-            random.randrange(150, 400), 80, edges)
-        if hit == 'second':
-            platform = Platform(random.randrange(800, 1200) , -100, speed_factor_platform, 
-            random.randrange(150, 400), 80, edges)
-            
+    platform = Platform(random.randrange(400, 800) , -100, speed_factor_platform, 
+    random.randrange(150, 400), 80)
     platform_sprites.add(platform)
     platform_list.append(platform)
 
@@ -89,3 +77,25 @@ def rendering(player_sprites,platform_sprites,screen,
 
     # Отображение последнего прорисованного окна
     pygame.display.flip()
+
+ # Установка условий для каждой платформы
+
+def platforming(platform_list, platform_go_left, 
+    platform_go_right, player, platform_sprites,
+    creating_platform, speed_factor_platform ):
+
+    """Установка условий для каждой платформы, генерация"""
+    for p in platform_list:
+        # Перемещение платформ при движении игрока
+        pull_platform(platform_go_left, p, platform_go_right)
+        # Коллизия игрока и платформы
+        collizions_platform(p, player, platform_sprites)
+
+        # Создание платформ
+    if p.rect.bottom > 200 and creating_platform == True:
+        create_platform(platform_sprites, platform_list, speed_factor_platform)
+
+        # Ограничение создания платформ 
+    if len(platform_list) > 2:
+        creating_platform = False
+

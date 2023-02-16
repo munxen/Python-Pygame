@@ -18,9 +18,9 @@ class Settings():
         # Скорость движения платформ
         self.speed_factor_platform = 2
 
-        # Координаты появления платформ
+        # Координаты появления первой платформы
         self.start_platform_hight = random.randrange(-100, 1200)
-        self.start_platform_weight = -100
+        self.start_platform_weight = 100
 
         self.platform_wight = random.randrange(150, 300)  # Ширина платформы
         self.platform_hight = 80 # Ширина платформы
