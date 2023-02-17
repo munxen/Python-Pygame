@@ -82,7 +82,7 @@ def rendering(player_sprites,platform_sprites,screen,
 
 def platforming(platform_list, platform_go_left, 
     platform_go_right, player, platform_sprites,
-    creating_platform, speed_factor_platform ):
+    creating_platform, speed_factor_platform,):
 
     """Установка условий для каждой платформы, генерация"""
     for p in platform_list:

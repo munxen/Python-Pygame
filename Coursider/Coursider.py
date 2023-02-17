@@ -9,7 +9,7 @@ import game_func__ as gf
 
 def run_game():
 
-    # Инициализирует pygame, settings  и объект экрана, название игры и time
+    # Инициализирует pygame, settings, объект экрана и time
     gf.inital_game()
     ai_settings = Settings()
     screen = pygame.display.set_mode ((ai_settings.screen_width,ai_settings.screen_height))
@@ -18,7 +18,6 @@ def run_game():
     # Создание класса Platform, добавление в общую группу, создание списка коллизий
     platform = Platform(ai_settings.start_platform_hight, ai_settings.start_platform_weight,
     ai_settings.speed_factor_platform, ai_settings.platform_wight, ai_settings.platform_hight)
-
     ai_settings.platform_sprites.add(platform)
     ai_settings.platform_list.append(platform)
 
@@ -50,18 +49,24 @@ def run_game():
                     player.pulling_right = True
 
             if event.type == pygame.KEYUP:
-                if event.key == pygame.K_a and player.change_left < 0:
+                if event.key == pygame.K_a:
                     player.stop()
-                    platform.platform_go_right = False
-                if event.key == pygame.K_d and player.change_right > 0:
+                if event.key == pygame.K_d:
                     player.stop()
-                    platform.platform_go_left = False
 
+        # Генерация платформ
         gf.platforming(ai_settings.platform_list, platform.platform_go_left,platform.platform_go_right,
         player, ai_settings.platform_sprites, platform.create_platform, ai_settings.speed_factor_platform)
 
+        # Ограничение создания платформ
         if len(ai_settings.platform_list) > 2:
             platform.create_platform = False
+        
+        # Рычаги перемещения платформ
+        if player.change_left == 0:
+            platform.platform_go_right = False
+        if player.change_right == 0:
+            platform.platform_go_left = False
 
         # Рендеринг
         gf.rendering(ai_settings.player_sprites, ai_settings.platform_sprites, screen,
